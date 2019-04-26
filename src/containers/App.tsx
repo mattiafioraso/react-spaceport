@@ -1,14 +1,57 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 
-import { CssBaseline } from '@material-ui/core';
+import { CssBaseline, createMuiTheme, List, ListItem } from '@material-ui/core';
+import { blue, orange } from '@material-ui/core/colors';
+import { ThemeProvider } from '@material-ui/styles';
 
-import Spaceship from '../components/Spaceship';
+import { Spaceship } from '../models/spaceship.model';
+
+import Frame from '../components/Frame';
+import SpaceshipCard from '../components/SpaceshipCard';
+import SpaceshipForm from '../components/SpaceshipForm';
+
+export type AppState = readonly Spaceship[];
+
+const theme = createMuiTheme({
+  palette: {
+    type: 'dark',
+    primary: blue,
+    secondary: orange,
+  },
+  typography: {
+    useNextVariants: true,
+  },
+});
 
 const App: FunctionComponent = () => {
+  const [spaceships, setSpaceships] = useState<AppState>([]);
+
   return (
     <>
       <CssBaseline />
-      <Spaceship name="Enterprise" category="cargo" color="gray" />
+      <ThemeProvider theme={theme}>
+        <Frame
+          master={
+            <List>
+              {spaceships.map(({ id, ...props }) => (
+                <ListItem disableGutters key={id}>
+                  <SpaceshipCard {...props} />
+                </ListItem>
+              ))}
+            </List>
+          }
+          detail={
+            <SpaceshipForm
+              onSubmit={data =>
+                setSpaceships([
+                  ...spaceships,
+                  { ...data, id: `${spaceships.length}` },
+                ])
+              }
+            />
+          }
+        />
+      </ThemeProvider>
     </>
   );
 };
