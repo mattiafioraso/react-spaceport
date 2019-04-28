@@ -23,17 +23,24 @@ const useStyles = makeStyles((theme: Theme) =>
       minHeight: '100%',
       backgroundColor: theme.palette.background.default,
       '&::before': {
+        /**
+         * Here we extend the before pseudo-element with the toolbar mixin in order to use it as an
+         * offset for the actual app bar (which is in fixed position)
+         */
         ...theme.mixins.toolbar,
         display: 'block',
         content: "''",
         width: '100%',
+        flex: '0 0 auto',
       },
     },
     content: {
       display: 'flex',
+      flex: '1 1 auto',
     },
     master: {
       flex: '0 0 320px',
+      borderRight: `1px solid ${theme.palette.divider}`,
       padding: `0 ${theme.spacing.unit * 2}px`,
     },
     detail: {
@@ -41,7 +48,6 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
       padding: theme.spacing.unit * 2,
-      paddingLeft: 0,
     },
   }),
 );

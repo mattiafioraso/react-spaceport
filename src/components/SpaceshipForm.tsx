@@ -16,7 +16,7 @@ import {
   SpaceshipCategory,
   Spaceship,
   SpaceshipData,
-} from '../models/spaceship.model';
+} from '../store/spaceships/spaceships.model';
 
 export interface SpaceshipFormProps {
   readonly initialName?: Spaceship['name'];

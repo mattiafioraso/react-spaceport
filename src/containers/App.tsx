@@ -1,16 +1,19 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useReducer } from 'react';
 
-import { CssBaseline, createMuiTheme, List, ListItem } from '@material-ui/core';
+import { BrowserRouter } from 'react-router-dom';
+
+import { CssBaseline, createMuiTheme } from '@material-ui/core';
 import { blue, orange } from '@material-ui/core/colors';
 import { ThemeProvider } from '@material-ui/styles';
 
-import { Spaceship } from '../models/spaceship.model';
+import StoreContext from '../contexts/store.context';
+
+import { spaceshipsReducer } from '../store/spaceships/spaceships.reducer';
 
 import Frame from '../components/Frame';
-import SpaceshipCard from '../components/SpaceshipCard';
-import SpaceshipForm from '../components/SpaceshipForm';
 
-export type AppState = readonly Spaceship[];
+import SpaceshipsList from './SpaceshipsList';
+import SpaceshipDetail from './SpaceshipDetail';
 
 const theme = createMuiTheme({
   palette: {
@@ -24,34 +27,18 @@ const theme = createMuiTheme({
 });
 
 const App: FunctionComponent = () => {
-  const [spaceships, setSpaceships] = useState<AppState>([]);
+  const store = useReducer(spaceshipsReducer, []);
 
   return (
     <>
       <CssBaseline />
-      <ThemeProvider theme={theme}>
-        <Frame
-          master={
-            <List>
-              {spaceships.map(({ id, ...props }) => (
-                <ListItem disableGutters key={id}>
-                  <SpaceshipCard {...props} />
-                </ListItem>
-              ))}
-            </List>
-          }
-          detail={
-            <SpaceshipForm
-              onSubmit={data =>
-                setSpaceships([
-                  ...spaceships,
-                  { ...data, id: `${spaceships.length}` },
-                ])
-              }
-            />
-          }
-        />
-      </ThemeProvider>
+      <StoreContext.Provider value={store}>
+        <ThemeProvider theme={theme}>
+          <BrowserRouter>
+            <Frame master={<SpaceshipsList />} detail={<SpaceshipDetail />} />
+          </BrowserRouter>
+        </ThemeProvider>
+      </StoreContext.Provider>
     </>
   );
 };

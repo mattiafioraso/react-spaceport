@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, ReactNode } from 'react';
 
 import {
   Card,
@@ -6,12 +6,15 @@ import {
   Typography,
   Theme,
   createStyles,
+  CardActions,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 
-import { SpaceshipData } from '../models/spaceship.model';
+import { SpaceshipData } from '../store/spaceships/spaceships.model';
 
-export type SpaceshipCardProps = SpaceshipData;
+export interface SpaceshipCardProps extends SpaceshipData {
+  readonly actions?: ReactNode;
+}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,6 +28,7 @@ const SpaceshipCard: FunctionComponent<SpaceshipCardProps> = ({
   name,
   category,
   color,
+  actions = null,
 }) => {
   const classes = useStyles();
 
@@ -39,6 +43,7 @@ const SpaceshipCard: FunctionComponent<SpaceshipCardProps> = ({
         <Typography variant="caption">Color: </Typography>
         <Typography>{color}</Typography>
       </CardContent>
+      <CardActions>{actions}</CardActions>
     </Card>
   );
 };
