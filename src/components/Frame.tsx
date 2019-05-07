@@ -59,7 +59,9 @@ const Frame: FunctionComponent<FrameProps> = ({ detail, master }) => {
     <div className={classes.root}>
       <AppBar position="fixed">
         <Toolbar>
-          <Typography variant="h6">Spaceport</Typography>
+          <Typography color="inherit" variant="h6">
+            Spaceport
+          </Typography>
         </Toolbar>
       </AppBar>
       <main className={classes.content}>

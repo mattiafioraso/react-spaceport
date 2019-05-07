@@ -5,22 +5,67 @@ import {
   SpaceshipCreated,
   SpaceshipUpdated,
   SpaceshipDeleted,
+  SpaceshipsRepository,
+  SpaceshipsStateSet,
 } from './spaceships.model';
 
-export const createSpaceship = (spaceship: Spaceship): SpaceshipCreated => ({
-  ...spaceship,
-  type: SpaceshipActionType.SPACESHIP_CREATED,
-});
+import { Thunk } from '../../contexts/store.context';
+
+import { AppState } from '../store.model';
+
+export const initSpaceshipsState = (): Thunk<
+  AppState,
+  SpaceshipsStateSet,
+  SpaceshipsRepository
+> => async (dispatch, getState, repository) => {
+  dispatch({
+    spaceships: await repository.getAll(),
+    type: SpaceshipActionType.SPACESHIP_STATE_SET,
+  });
+};
+
+export const createSpaceship = (
+  spaceship: Spaceship,
+): Thunk<AppState, SpaceshipCreated, SpaceshipsRepository> => async (
+  dispatch,
+  getState,
+  repository,
+) => {
+  repository.create(spaceship);
+
+  dispatch({
+    ...spaceship,
+    type: SpaceshipActionType.SPACESHIP_CREATED,
+  });
+};
 
 export const updateSpaceship = (id: Spaceship['id']) => (
   data: Partial<SpaceshipData>,
-): SpaceshipUpdated => ({
-  ...data,
-  id,
-  type: SpaceshipActionType.SPACESHIP_UPDATED,
-});
+): Thunk<AppState, SpaceshipUpdated, SpaceshipsRepository> => async (
+  dispatch,
+  getState,
+  repository,
+) => {
+  repository.update(id)(data);
 
-export const deleteSpaceship = (id: Spaceship['id']): SpaceshipDeleted => ({
-  id,
-  type: SpaceshipActionType.SPACESHIP_DELETED,
-});
+  dispatch({
+    id,
+    ...data,
+    type: SpaceshipActionType.SPACESHIP_UPDATED,
+  });
+};
+
+export const deleteSpaceship = (
+  id: Spaceship['id'],
+): Thunk<AppState, SpaceshipDeleted, SpaceshipsRepository> => async (
+  dispatch,
+  getState,
+  repository,
+) => {
+  repository.delete(id);
+
+  dispatch({
+    id,
+    type: SpaceshipActionType.SPACESHIP_DELETED,
+  });
+};

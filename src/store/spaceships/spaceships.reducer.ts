@@ -7,10 +7,14 @@ import {
 } from './spaceships.model';
 
 export const spaceshipsReducer: Reducer<SpaceshipsState, SpaceshipAction> = (
-  state,
+  state = [],
   action,
 ) => {
   switch (action.type) {
+    case SpaceshipActionType.SPACESHIP_STATE_SET: {
+      return [...action.spaceships];
+    }
+
     case SpaceshipActionType.SPACESHIP_CREATED: {
       const { type, ...spaceship } = action;
 

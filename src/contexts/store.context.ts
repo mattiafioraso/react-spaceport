@@ -1,8 +1,19 @@
 import { createContext, Dispatch } from 'react';
 
-import { AppAction, AppState } from '../store/store.model';
+import { Action } from '../store/action.model';
 
-export type StoreContextValue = [AppState, Dispatch<AppAction>];
+import { AppAction, AppState, AppDependencies } from '../store/store.model';
+
+export type Thunk<S = any, A extends Action = Action, D = any> = (
+  dispatch: Dispatch<A>,
+  getState: () => S,
+  extra: D,
+) => ReturnType<Dispatch<A>>;
+
+export type StoreContextValue = [
+  AppState,
+  Dispatch<AppAction | Thunk<AppState, AppAction, AppDependencies>>
+];
 
 const StoreContext = createContext<StoreContextValue>([[], () => undefined]);
 
